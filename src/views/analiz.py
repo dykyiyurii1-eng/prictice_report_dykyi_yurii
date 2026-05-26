@@ -2,6 +2,7 @@ import flet as ft
 import flet_charts as fch
 import plotly.express as px
 from src.models.load_product import load_products
+from src.views.menu import navigation_menu
 
 
 async def analytics(page):
@@ -18,14 +19,23 @@ async def analytics(page):
     products = await load_products()
 
     if not products:
+        content = ft.Column(
+            [ft.Text("❌ Немає продуктів для аналізу", size=20, color=ft.Colors.WHITE)],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            expand=True,
+        )
         return ft.View(
             route="/analytics",
             controls=[
-                ft.Column(
-                    [ft.Text("❌ Немає продуктів для аналізу", size=20, color=ft.Colors.WHITE)],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                ft.Row(
                     expand=True,
+                    spacing=0,
+                    controls=[
+                        navigation_menu(page, "/analytics"),
+                        ft.VerticalDivider(width=0.1),
+                        content,
+                    ],
                 )
             ],
         )
@@ -56,15 +66,24 @@ async def analytics(page):
     )
 
     loading.visible = False
+    content = ft.Column(
+        expand=True,
+        controls=[loading, chart, stats],
+    )
 
     return ft.View(
         route="/analytics",
         scroll=ft.ScrollMode.AUTO,
         padding=0,
         controls=[
-            ft.Column(
+            ft.Row(
                 expand=True,
-                controls=[loading, chart, stats],
+                spacing=0,
+                controls=[
+                    navigation_menu(page, "/analytics"),
+                    ft.VerticalDivider(width=0.1),
+                    content,
+                ],
             )
         ],
     )

@@ -10,12 +10,14 @@ async def main(page: ft.Page):
     page.favicon='assets/icon.ico'
     # page.bgcolor = ft.Colors.TRANSPARENT
 
-    async def route_change():
+    async def route_change(e=None):
         page.views.clear()
         page.views.append(await home(page))
 
         if page.route == "/table_of_products":
             page.views.append(await table_of_products1(page))
+        if page.route == "/buy_products":
+            page.views.append(await buy_products(page))
         if page.route == "/analytics":
             page.views.append(await analytics(page))
         page.update()

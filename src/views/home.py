@@ -3,6 +3,7 @@ import datetime
 import flet as ft
 
 from src.models.load_product import load_products
+from src.views.menu import navigation_menu
 
 
 async def home(page):
@@ -240,8 +241,7 @@ async def home(page):
             ft.Row(
                 expand=True,
                 controls=[
-                    rail,
-                    ft.VerticalDivider(width=0.1),
+                    navigation_menu(page, "/"),
                     hero_content,
                 ],
             ),

@@ -4,6 +4,7 @@ import datetime
 from src.models.load_product import *
 from src.models.write_table import *
 from src.models.logic_id_valid_name import *
+from src.views.menu import navigation_menu
 
 
 
@@ -263,18 +264,27 @@ async def table_of_products1(page):
         ),
     )
 
-
-    return ft.View(
-        route="/table_of_products",
-        controls=[ft.Column([
+    content = ft.Column([
             ft.AppBar(
                 title=ft.Text("Flet app"),
                 actions=[
                     anchor,
-                    ft.IconButton(ft.Icons.HOUSE, on_click=go_city),
-                    ft.IconButton(ft.Icons.LOCATION_CITY_ROUNDED),
                 ]
             ),
             page_add,
-        ], expand=True)]
+        ], expand=True)
+
+    return ft.View(
+        route="/table_of_products",
+        controls=[
+            ft.Row(
+                expand=True,
+                spacing=0,
+                controls=[
+                    navigation_menu(page, "/table_of_products"),
+                    # ft.VerticalDivider(width=0.1),
+                    content,
+                ],
+            )
+        ]
     )
