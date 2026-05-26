@@ -2,7 +2,7 @@ import flet as ft
 import flet_charts as fch
 import plotly.express as px
 from src.models.load_product import load_products
-from src.views.menu import navigation_menu
+from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
 async def analytics(page):
@@ -34,7 +34,7 @@ async def analytics(page):
                     controls=[
                         navigation_menu(page, "/analytics"),
                         ft.VerticalDivider(width=0.1),
-                        content,
+                        ft.Container(expand=True, bgcolor=APP_BG, padding=24, content=content),
                     ],
                 )
             ],
@@ -66,9 +66,31 @@ async def analytics(page):
     )
 
     loading.visible = False
-    content = ft.Column(
+    content = ft.Container(
         expand=True,
-        controls=[loading, chart, stats],
+        bgcolor=APP_BG,
+        padding=24,
+        content=ft.Column(
+            expand=True,
+            spacing=18,
+            controls=[
+                ft.Text("Analytics", size=28, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Container(
+                    expand=True,
+                    padding=18,
+                    bgcolor=PANEL_BG,
+                    border_radius=8,
+                    border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
+                    content=ft.Column(expand=True, controls=[loading, chart]),
+                ),
+                ft.Container(
+                    padding=18,
+                    bgcolor="#102331",
+                    border_radius=8,
+                    content=stats,
+                ),
+            ],
+        ),
     )
 
     return ft.View(
@@ -81,7 +103,6 @@ async def analytics(page):
                 spacing=0,
                 controls=[
                     navigation_menu(page, "/analytics"),
-                    ft.VerticalDivider(width=0.1),
                     content,
                 ],
             )

@@ -1,6 +1,6 @@
 import csv
 from .save_data import *
-
+import os
 def load_csv_products():
     """Записування в змінну те, що в таблиці"""
     products.clear()
@@ -21,8 +21,12 @@ def load_csv_products():
     except FileNotFoundError:
         pass
 
-
-
+def products_add_to_txt(text):
+    try:
+        with open(filename_txt,"a",encoding="utf-8") as file:
+            file.write(f'{text}\n')
+    except FileNotFoundError:
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
 
 
 
@@ -35,18 +39,10 @@ def write_csv():
         except FileNotFoundError:
              return []
 
-def show_all_products():
-    """Читання CSV-таблиці"""
-    with open(filename, "r", newline="", encoding="utf-8") as file:
-        product_table=list(csv.DictReader(file))
-        if not product_table:
-            return print()
-        return product_table
 
 
 
 if __name__ == '__main__':
     load_csv_products()
-    products_csv()
-    show_all_products()
+
 

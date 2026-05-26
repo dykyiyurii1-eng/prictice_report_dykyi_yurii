@@ -4,7 +4,7 @@ import datetime
 from src.models.load_product import *
 from src.models.write_table import *
 from src.models.logic_id_valid_name import *
-from src.views.menu import navigation_menu
+from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
 
@@ -14,13 +14,13 @@ async def table_of_products1(page):
 
 
     style_field = dict(
-        border_color=ft.Colors.BLUE_400,
+        border_color=ft.Colors.BLUE_GREY_100,
         border_radius=8,
-        bgcolor=ft.Colors.BLUE_50,
-        focused_border_color=ft.Colors.BLUE_600,
-        cursor_color=ft.Colors.RED,
-        text_style=ft.TextStyle(size=14, weight=ft.FontWeight.BOLD),
-        label_style=ft.TextStyle(color=ft.Colors.BLUE_800),
+        bgcolor=ft.Colors.WHITE,
+        focused_border_color=ft.Colors.CYAN_600,
+        cursor_color=ft.Colors.CYAN_700,
+        text_style=ft.TextStyle(size=14, weight=ft.FontWeight.W_500, color=TEXT_DARK),
+        label_style=ft.TextStyle(color=ft.Colors.BLUE_GREY_700),
         hint_style=ft.TextStyle(color=ft.Colors.GREY_500, italic=True),
     )
 
@@ -66,16 +66,16 @@ async def table_of_products1(page):
     ]
 
     table = ft.DataTable(
-        border=ft.Border.all(1, ft.Colors.BLUE_400),
-        border_radius=10,
-        heading_row_color=ft.Colors.BLUE_100,
-        heading_row_height=40,
+        border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
+        border_radius=8,
+        heading_row_color=ft.Colors.BLUE_GREY_50,
+        heading_row_height=46,
         data_row_color=ft.Colors.WHITE,
-        data_row_min_height=35,
+        data_row_min_height=42,
         divider_thickness=1,
         column_spacing=20,
-        horizontal_lines=ft.BorderSide(1, ft.Colors.GREY_300),
-        vertical_lines=ft.BorderSide(1, ft.Colors.GREY_300),
+        horizontal_lines=ft.BorderSide(1, ft.Colors.BLUE_GREY_50),
+        vertical_lines=ft.BorderSide(1, ft.Colors.BLUE_GREY_50),
         columns=columns,
         rows=[],
         visible=bool(products),
@@ -223,10 +223,27 @@ async def table_of_products1(page):
         btn_for_cancle.visible = True
         page.update()
 
-    btn_for_cancle = ft.Button("Скасувати", on_click=cancle, visible=False)
-    add_btn_agree = ft.Button("Підтвердити", on_click=agree, visible=False)
+    btn_for_cancle = ft.Button(
+        "Скасувати",
+        on_click=cancle,
+        visible=False,
+        style=ft.ButtonStyle(color=ft.Colors.BLUE_GREY_700),
+    )
+    add_btn_agree = ft.Button(
+        "Підтвердити",
+        on_click=agree,
+        visible=False,
+        style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
+    )
     add_product = ft.Row(
-        [ft.Button("Додати продукт", on_click=fields_see)],
+        [
+            ft.Button(
+                "Додати продукт",
+                icon=ft.Icons.ADD,
+                on_click=fields_see,
+                style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
+            )
+        ],
         alignment=ft.MainAxisAlignment.END,
     )
 
@@ -252,6 +269,10 @@ async def table_of_products1(page):
     page_add = ft.SafeArea(
         expand=True,
         content=ft.Container(
+            expand=True,
+            padding=20,
+            bgcolor=PANEL_BG,
+            border_radius=8,
             content=ft.Column([
                 input_rows,
                 table,
@@ -264,15 +285,22 @@ async def table_of_products1(page):
         ),
     )
 
-    content = ft.Column([
+    content = ft.Container(
+        expand=True,
+        bgcolor=APP_BG,
+        padding=20,
+        content=ft.Column([
             ft.AppBar(
-                title=ft.Text("Flet app"),
+                title=ft.Text("Products", color=TEXT_DARK, weight=ft.FontWeight.BOLD),
+                bgcolor=APP_BG,
+                elevation=0,
                 actions=[
                     anchor,
                 ]
             ),
             page_add,
-        ], expand=True)
+        ], expand=True),
+    )
 
     return ft.View(
         route="/table_of_products",
@@ -282,7 +310,6 @@ async def table_of_products1(page):
                 spacing=0,
                 controls=[
                     navigation_menu(page, "/table_of_products"),
-                    # ft.VerticalDivider(width=0.1),
                     content,
                 ],
             )

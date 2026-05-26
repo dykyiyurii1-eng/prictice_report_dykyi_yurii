@@ -3,7 +3,7 @@ import datetime
 import flet as ft
 
 from src.models.load_product import load_products
-from src.views.menu import navigation_menu
+from src.views.menu import MENU_ACTIVE, navigation_menu
 
 
 async def home(page):
@@ -58,8 +58,8 @@ async def home(page):
                 ft.Container(
                     padding=ft.Padding.symmetric(horizontal=16, vertical=10),
                     border_radius=8,
-                    bgcolor=ft.Colors.with_opacity(0.2, ft.Colors.RED),
-                    border=ft.Border.all(1, ft.Colors.with_opacity(0.5, ft.Colors.RED)),
+                    bgcolor=ft.Colors.with_opacity(0.16, ft.Colors.RED),
+                    border=ft.Border.all(1, ft.Colors.with_opacity(0.42, ft.Colors.RED)),
                     content=ft.Row(
                         spacing=8,
                         tight=True,
@@ -73,8 +73,8 @@ async def home(page):
                 ft.Container(
                     padding=ft.Padding.symmetric(horizontal=16, vertical=10),
                     border_radius=8,
-                    bgcolor=ft.Colors.with_opacity(0.2, ft.Colors.ORANGE),
-                    border=ft.Border.all(1, ft.Colors.with_opacity(0.5, ft.Colors.ORANGE)),
+                    bgcolor=ft.Colors.with_opacity(0.16, ft.Colors.ORANGE),
+                    border=ft.Border.all(1, ft.Colors.with_opacity(0.42, ft.Colors.ORANGE)),
                     content=ft.Row(
                         spacing=8,
                         tight=True,
@@ -151,10 +151,10 @@ async def home(page):
         controls=[
             ft.Container(
                 width=190,
-                padding=ft.Padding.all(18),
+                padding=ft.Padding.all(20),
                 border_radius=8,
-                bgcolor=ft.Colors.with_opacity(0.14, ft.Colors.WHITE),
-                border=ft.Border.all(1, ft.Colors.with_opacity(0.24, ft.Colors.WHITE)),
+                bgcolor=ft.Colors.with_opacity(0.12, ft.Colors.WHITE),
+                border=ft.Border.all(1, ft.Colors.with_opacity(0.22, ft.Colors.WHITE)),
                 content=ft.Column(
                     spacing=10,
                     controls=[
@@ -176,10 +176,10 @@ async def home(page):
             expand=True,
             controls=[
                 ft.Image(src="main_photo.jpg", fit=ft.BoxFit.COVER, expand=True,width=float("inf")),
-                ft.Container(bgcolor="#99000000", expand=True),
+                ft.Container(bgcolor="#B0102331", expand=True),
                 ft.Container(
-                    padding=48,
-                    alignment=ft.Alignment.CENTER_LEFT,
+                    padding=ft.Padding.symmetric(horizontal=58, vertical=42),
+                    alignment=ft.Alignment.CENTER,
                     content=ft.Column(
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -216,9 +216,9 @@ async def home(page):
                                                 alignment=ft.MainAxisAlignment.CENTER,
                                             ),
                                             style=ft.ButtonStyle(
-                                                bgcolor=ft.Colors.CYAN,
+                                                bgcolor=MENU_ACTIVE,
                                                 padding=ft.Padding.symmetric(horizontal=40, vertical=18),
-                                                shape=ft.RoundedRectangleBorder(radius=12),
+                                                shape=ft.RoundedRectangleBorder(radius=8),
                                             ),
                                             on_click=go_products,
                                         ),

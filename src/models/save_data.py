@@ -1,6 +1,3 @@
-
-
-
 filename = "storage/products.csv"
 filename_txt =  "storage/buy_products.txt"
 products = []
