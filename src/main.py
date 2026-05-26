@@ -12,7 +12,7 @@ async def main(page: ft.Page):
 
     async def route_change():
         page.views.clear()
-        page.views.append(home(page))
+        page.views.append(await home(page))
 
         if page.route == "/table_of_products":
             page.views.append(await table_of_products1(page))
@@ -32,5 +32,5 @@ async def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    ft.run(main, view=ft.AppView.WEB_BROWSER, port=9201, assets_dir="assets")
+    ft.run(main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")
     # ft.run(main)

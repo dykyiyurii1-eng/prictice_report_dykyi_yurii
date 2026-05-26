@@ -1,6 +1,8 @@
+
+
+
 filename = "storage/products.csv"
+filename_txt =  "storage/buy_products.txt"
 products = []
-filename_txt="src/storage"
-list_products=[]
-
-
+list_products = []
+print(filename, filename_txt)
