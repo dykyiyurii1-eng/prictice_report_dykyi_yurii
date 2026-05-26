@@ -2,17 +2,22 @@ import flet as ft
 
 from src.views import *
 
-def main(page: ft.Page):
-    # page.title = "дз"
+async def main(page: ft.Page):
+    page.bgcolor = ft.Colors.TRANSPARENT
     page.window.icon='assets/icon.ico'
-    def route_change():
+    page.scroll = ft.ScrollMode.AUTO
+    page.image='assets/main_photo.jpg'
+    page.favicon='assets/icon.ico'
+    # page.bgcolor = ft.Colors.TRANSPARENT
+
+    async def route_change():
         page.views.clear()
         page.views.append(home(page))
 
         if page.route == "/table_of_products":
-            page.views.append(table_of_products1(page))
-        # if page.route == "/settings":
-        #     page.views.append(cards_people(page))
+            page.views.append(await table_of_products1(page))
+        if page.route == "/analytics":
+            page.views.append(await analytics(page))
         page.update()
 
     async def view_pop(e):
@@ -23,9 +28,9 @@ def main(page: ft.Page):
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
-    route_change()
+    await route_change()
 
 
 if __name__ == "__main__":
-    # ft.run(main, view=ft.AppView.WEB_BROWSER, port=9201)
-    ft.run(main)
+    ft.run(main, view=ft.AppView.WEB_BROWSER, port=9201, assets_dir="assets")
+    # ft.run(main)

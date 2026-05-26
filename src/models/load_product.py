@@ -1,9 +1,10 @@
 import asyncio
 import csv
+import os
 from .save_data import *
 async def load_products():
     """Асинхронне завантаження продуктів з CSV"""
-    await asyncio.sleep(0)  # дає можливість UI оновлюватися
+    await asyncio.sleep(0)
     products = []
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -23,8 +24,10 @@ def load_buy_products():
     try:
         with open(filename_txt, "r", encoding="utf-8") as file:
             for i in file:
-                product = i.strip()
-                if product:
-                    list_products.append(product)
+                if i.strip():
+                    list_products.append(i.strip())
+        return list_products
     except FileNotFoundError:
         print("Файл ще не створений")
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        return []

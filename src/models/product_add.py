@@ -25,16 +25,6 @@ def load_csv_products():
 
 
 
-def products_csv():
-    """Записування продуктів до CSV-таблиці"""
-    with open(filename, "w", newline="",encoding="utf-8") as file:
-        if not products:
-            return print('На даний момент продуктів немає')
-        columns = list(products[0].keys())
-        writer = csv.DictWriter(file, fieldnames=columns)
-        writer.writeheader()
-        writer.writerows(products)
-
 
 def write_csv():
         try:

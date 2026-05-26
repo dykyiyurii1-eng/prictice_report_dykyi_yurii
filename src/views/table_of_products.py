@@ -1,14 +1,15 @@
 import flet as ft
 import datetime
 
-from src.models.load_product import load_products
+from src.models.load_product import *
 from src.models.write_table import *
 from src.models.logic_id_valid_name import *
 
 
 
-def table_of_products1(page):
+async def table_of_products1(page):
     page.favicon = "icon.ico"
+    products= await load_products()
 
 
     style_field = dict(
@@ -47,7 +48,7 @@ def table_of_products1(page):
         item = e.control.data
         table.rows = [row for row in table.rows if row.data != item]
         products = [p for p in products if p["id"] != item["id"]]
-        write_table()
+        write_table(products,  filename)
         table.visible = bool(products)
         page.update()
 
@@ -100,8 +101,7 @@ def table_of_products1(page):
             data=item,
         )
 
-    for item in products:
-        table.rows.append(create_row(item))
+
 
     def handle_change(e):
         if e.control.value:
@@ -203,7 +203,7 @@ def table_of_products1(page):
             table.rows.append(create_row(new_item))
             table.visible = True
 
-        write_table()
+        write_table(products,  filename)
         input_rows.visible = False
         add_btn_agree.visible = False
         btn_for_cancle.visible = False
@@ -239,12 +239,14 @@ def table_of_products1(page):
         page.update()
 
     anchor = ft.SearchBar(
-        view_elevation=4,
+        view_elevation=100,
         divider_color=ft.Colors.AMBER,
         bar_hint_text="Пошук продуктів...",
         view_hint_text="Введіть назву продукту...",
         on_change=search_products,
     )
+
+    table.rows=[create_row(item) for item in products]
 
     page_add = ft.SafeArea(
         expand=True,
@@ -255,37 +257,12 @@ def table_of_products1(page):
                 add_btn_agree,
                 add_product,
                 btn_for_cancle,
-                ft.NavigationDrawer(
-                    controls=[
-                        ft.Container(
-                            padding=ft.Padding.only(left=28, top=20, bottom=12),
-                            content=ft.Text("🚀 HomeStock", size=18, weight=ft.FontWeight.BOLD, color="#FF00FF"),
-                        ),
-                        ft.NavigationDrawerDestination(
-                            icon=ft.Icons.INVENTORY_2,
-                            selected_icon=ft.Icons.INVENTORY,
-                            label="Інвентар",
-                        ),
-                        ft.NavigationDrawerDestination(
-                            icon=ft.Icons.SHOPPING_BAG_OUTLINED,
-                            selected_icon=ft.Icons.SHOPPING_BAG,
-                            label="Покупки",
-                        ),
-                        ft.NavigationDrawerDestination(
-                            icon=ft.Icons.BAR_CHART_OUTLINED,
-                            selected_icon=ft.Icons.BAR_CHART,
-                            label="Аналітика",
-                        ),
-                        ft.NavigationDrawerDestination(
-                            icon=ft.Icons.SETTINGS_OUTLINED,
-                            selected_icon=ft.Icons.SETTINGS,
-                            label="Налаштування",
-                        ),
-                    ],
-                )
-            ], spacing=20),
+
+
+    ])
         ),
     )
+
 
     return ft.View(
         route="/table_of_products",

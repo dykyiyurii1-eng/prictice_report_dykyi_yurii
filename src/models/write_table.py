@@ -1,7 +1,6 @@
 from .save_data import *
 import csv
-def write_table():
-    global products
+def write_table(products,  filename):
     # os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w", newline="", encoding="utf-8") as file:
         if products:

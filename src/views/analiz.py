@@ -6,7 +6,7 @@ import asyncio
 from src.models.save_data import *
 from src.models.load_product import *
 
-async def main(page: ft.Page):
+async def analytics(page):
     page.title = "Аналіз витрат"
     page.scroll = "auto"
 
@@ -28,7 +28,7 @@ async def main(page: ft.Page):
 
     if not products:
         loading_text.value = "❌ Немає продуктів для аналізу"
-        page.update()
+        loading_ring.visible=False
         return
 
 
@@ -58,8 +58,26 @@ async def main(page: ft.Page):
     page.controls.clear()
 
 
-    page.add(
-        chart
+    page_add= ft.SafeArea(
+        expand=True,
+        content=ft.Container(ft.Column([
+            chart,stats]
+        )))
+    return ft.View(
+        route="/analytics",
+        padding=0,
+        controls=[
+            ft.Row(
+                expand=True,
+                spacing=0,
+                controls=[
+                   page_add
+                ],
+            ),
+        ],
     )
 
-ft.run(main, assets_dir="src/assets")
+
+
+if __name__ == '__main__':
+    analytics()
