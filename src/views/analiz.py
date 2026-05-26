@@ -1,29 +1,33 @@
 import flet as ft
 import flet_charts as fch
-import plotly.express as px
+import plotly.graph_objects as go
 from src.models.load_product import load_products
 from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
 async def analytics(page):
-    loading = ft.Column(
-        controls=[
-            ft.ProgressRing(width=60, height=60, stroke_width=6, color=ft.Colors.CYAN),
-            ft.Text("Завантаження даних...", size=16, color=ft.Colors.WHITE),
-        ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        expand=True,
-    )
-
     products = await load_products()
 
     if not products:
-        content = ft.Column(
-            [ft.Text("❌ Немає продуктів для аналізу", size=20, color=ft.Colors.WHITE)],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        content = ft.Container(
             expand=True,
+            bgcolor=APP_BG,
+            padding=24,
+            content=ft.Column(
+                [
+                    ft.Icon(ft.Icons.BAR_CHART_OUTLINED, size=56, color=ft.Colors.CYAN_700),
+                    ft.Text("Поки немає даних для аналізу", size=22, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                    ft.Text(
+                        "Додайте товари в таблиці, і тут з'явиться короткий аналіз витрат.",
+                        size=14,
+                        color=ft.Colors.BLUE_GREY_600,
+                        text_align=ft.TextAlign.CENTER,
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                expand=True,
+            ),
         )
         return ft.View(
             route="/analytics",
@@ -33,8 +37,7 @@ async def analytics(page):
                     spacing=0,
                     controls=[
                         navigation_menu(page, "/analytics"),
-                        ft.VerticalDivider(width=0.1),
-                        ft.Container(expand=True, bgcolor=APP_BG, padding=24, content=content),
+                        content,
                     ],
                 )
             ],
@@ -43,52 +46,50 @@ async def analytics(page):
     names = [p["name"] for p in products]
     costs = [p["quantity"] * p["price"] for p in products]
 
-    fig = px.bar(
-        x=names,
-        y=costs,
-        labels={"x": "Продукти", "y": "Витрати (грн)"},
+    fig = go.Figure(data=[go.Bar(x=names, y=costs, marker_color="#1D9BF0")])
+    fig.update_layout(
         title="Аналіз витрат по продуктах",
-        color=names,
+        xaxis_title="Продукти",
+        yaxis_title="Витрати (грн)",
+        height=330,
+        margin=dict(l=36, r=20, t=54, b=48),
+        showlegend=False,
+        template="plotly_white",
     )
     chart = fch.PlotlyChart(figure=fig, expand=True)
 
     total = sum(costs)
     avg = total / len(costs)
 
-    stats = ft.Column(
-        spacing=8,
+    stats = ft.Row(
+        wrap=True,
+        spacing=10,
         controls=[
-            ft.Text(f"Загальні витрати: {total:.2f} грн", size=16, color=ft.Colors.WHITE),
-            ft.Text(f"Середні витрати: {avg:.2f} грн", size=16, color=ft.Colors.WHITE),
-            ft.Text(f"Максимальні витрати: {max(costs):.2f} грн", size=16, color=ft.Colors.WHITE),
-            ft.Text(f"Мінімальні витрати: {min(costs):.2f} грн", size=16, color=ft.Colors.WHITE),
+            ft.Container(width=220, padding=12, border_radius=8, bgcolor="#102331", content=ft.Text(f"Загальні витрати: {total:.2f} грн", size=14, color=ft.Colors.WHITE)),
+            ft.Container(width=220, padding=12, border_radius=8, bgcolor="#18364A", content=ft.Text(f"Середні витрати: {avg:.2f} грн", size=14, color=ft.Colors.WHITE)),
+            ft.Container(width=220, padding=12, border_radius=8, bgcolor="#1D4D63", content=ft.Text(f"Максимальні витрати: {max(costs):.2f} грн", size=14, color=ft.Colors.WHITE)),
+            ft.Container(width=220, padding=12, border_radius=8, bgcolor="#245D72", content=ft.Text(f"Мінімальні витрати: {min(costs):.2f} грн", size=14, color=ft.Colors.WHITE)),
         ],
     )
 
-    loading.visible = False
     content = ft.Container(
         expand=True,
         bgcolor=APP_BG,
-        padding=24,
+        padding=20,
         content=ft.Column(
             expand=True,
-            spacing=18,
+            spacing=14,
             controls=[
-                ft.Text("Analytics", size=28, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text("Analytics", size=24, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
                 ft.Container(
-                    expand=True,
-                    padding=18,
+                    height=380,
+                    padding=14,
                     bgcolor=PANEL_BG,
                     border_radius=8,
                     border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
-                    content=ft.Column(expand=True, controls=[loading, chart]),
+                    content=chart,
                 ),
-                ft.Container(
-                    padding=18,
-                    bgcolor="#102331",
-                    border_radius=8,
-                    content=stats,
-                ),
+                stats,
             ],
         ),
     )

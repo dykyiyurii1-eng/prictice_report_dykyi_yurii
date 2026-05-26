@@ -51,18 +51,19 @@ async def table_of_products1(page):
         products = [p for p in products if p["id"] != item["id"]]
         write_table(products,  filename)
         table.visible = bool(products)
+        empty_state.visible = not bool(products)
         page.update()
 
     columns = [
-        ft.DataColumn(ft.Text("ID")),
-        ft.DataColumn(ft.Text("Назва")),
-        ft.DataColumn(ft.Text("Категорія")),
-        ft.DataColumn(ft.Text("Кількість")),
-        ft.DataColumn(ft.Text("Місце")),
-        ft.DataColumn(ft.Text("Ціна")),
-        ft.DataColumn(ft.Text("Дата початку")),
-        ft.DataColumn(ft.Text("Дата завершення")),
-        ft.DataColumn(ft.Text("Дії")),
+        ft.DataColumn(ft.Text("ID", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Назва", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Категорія", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Кількість", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Місце", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Ціна", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Початок", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Завершення", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
+        ft.DataColumn(ft.Text("Дії", weight=ft.FontWeight.BOLD, color=TEXT_DARK)),
     ]
 
     table = ft.DataTable(
@@ -73,7 +74,7 @@ async def table_of_products1(page):
         data_row_color=ft.Colors.WHITE,
         data_row_min_height=42,
         divider_thickness=1,
-        column_spacing=20,
+        column_spacing=16,
         horizontal_lines=ft.BorderSide(1, ft.Colors.BLUE_GREY_50),
         vertical_lines=ft.BorderSide(1, ft.Colors.BLUE_GREY_50),
         columns=columns,
@@ -81,17 +82,27 @@ async def table_of_products1(page):
         visible=bool(products),
     )
 
+    def cell_text(value, width=None):
+        return ft.Text(
+            str(value),
+            size=13,
+            color=TEXT_DARK,
+            max_lines=2,
+            overflow=ft.TextOverflow.ELLIPSIS,
+            width=width,
+        )
+
     def create_row(item):
         return ft.DataRow(
             cells=[
-                ft.DataCell(ft.Text(item["id"])),
-                ft.DataCell(ft.Text(item["name"])),
-                ft.DataCell(ft.Text(item["category"])),
-                ft.DataCell(ft.Text(str(item["quantity"]))),
-                ft.DataCell(ft.Text(item["place"])),
-                ft.DataCell(ft.Text(str(item["price"]))),
-                ft.DataCell(ft.Text(item["start_date"])),
-                ft.DataCell(ft.Text(item["end_date"])),
+                ft.DataCell(cell_text(item["id"], 74)),
+                ft.DataCell(cell_text(item["name"], 140)),
+                ft.DataCell(cell_text(item["category"], 120)),
+                ft.DataCell(cell_text(item["quantity"], 72)),
+                ft.DataCell(cell_text(item["place"], 110)),
+                ft.DataCell(cell_text(item["price"], 74)),
+                ft.DataCell(cell_text(item["start_date"], 128)),
+                ft.DataCell(cell_text(item["end_date"], 110)),
                 ft.DataCell(
                     ft.Row([
                         ft.IconButton(icon=ft.Icons.DELETE, data=item, on_click=delete_row),
@@ -203,6 +214,7 @@ async def table_of_products1(page):
             products.append(new_item)
             table.rows.append(create_row(new_item))
             table.visible = True
+            empty_state.visible = False
 
         write_table(products,  filename)
         input_rows.visible = False
@@ -214,6 +226,7 @@ async def table_of_products1(page):
         input_rows.visible = False
         add_btn_agree.visible = False
         btn_for_cancle.visible = False
+        empty_state.visible = not bool(products)
         page.update()
 
     def fields_see(e):
@@ -221,6 +234,7 @@ async def table_of_products1(page):
         input_rows.visible = True
         add_btn_agree.visible = True
         btn_for_cancle.visible = True
+        empty_state.visible = False
         page.update()
 
     btn_for_cancle = ft.Button(
@@ -254,6 +268,7 @@ async def table_of_products1(page):
             if query in item["name"].lower():
                 table.rows.append(create_row(item))
         table.visible = bool(table.rows)
+        empty_state.visible = not bool(products)
         page.update()
 
     anchor = ft.SearchBar(
@@ -266,6 +281,40 @@ async def table_of_products1(page):
 
     table.rows=[create_row(item) for item in products]
 
+    empty_state = ft.Container(
+        visible=not bool(products),
+        expand=True,
+        alignment=ft.Alignment.CENTER,
+        padding=32,
+        content=ft.Column(
+            spacing=14,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ft.Icon(ft.Icons.INVENTORY_2_OUTLINED, size=56, color=ft.Colors.CYAN_700),
+                ft.Text("Поки товарів немає", size=24, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text(
+                    "Ви можете додати перший продукт і одразу побачити його в таблиці.",
+                    size=14,
+                    color=ft.Colors.BLUE_GREY_600,
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                ft.Icon(ft.Icons.KEYBOARD_DOUBLE_ARROW_DOWN, size=32, color=ft.Colors.CYAN_700),
+                ft.Button(
+                    "Додати продукт",
+                    icon=ft.Icons.ADD,
+                    on_click=fields_see,
+                    style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
+                ),
+            ],
+        ),
+    )
+
+    table_area = ft.Row(
+        controls=[table],
+        scroll=ft.ScrollMode.AUTO,
+    )
+
     page_add = ft.SafeArea(
         expand=True,
         content=ft.Container(
@@ -275,7 +324,8 @@ async def table_of_products1(page):
             border_radius=8,
             content=ft.Column([
                 input_rows,
-                table,
+                empty_state,
+                table_area,
                 add_btn_agree,
                 add_product,
                 btn_for_cancle,

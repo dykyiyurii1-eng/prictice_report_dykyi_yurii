@@ -43,8 +43,7 @@ async def buy_products(page: ft.Page):
         e.control.parent.controls.remove(e.control)
         e.control.parent.update()
 
-    def handle_update(e: ft.DismissibleUpdateEvent):
-        print(e)
+
 
     def make_dismissible(text: str):
         return ft.Dismissible(
@@ -52,7 +51,7 @@ async def buy_products(page: ft.Page):
             background=ft.Container(bgcolor=ft.Colors.GREEN),
             secondary_background=ft.Container(bgcolor=ft.Colors.RED),
             on_dismiss=handle_dismiss,
-            on_update=handle_update,
+
             on_confirm_dismiss=handle_confirm_dismiss,
             dismiss_thresholds={
                 ft.DismissDirection.END_TO_START: 0.2,
@@ -89,7 +88,7 @@ async def buy_products(page: ft.Page):
             expand=True,
             spacing=18,
             controls=[
-                ft.Text("Purchases", size=28, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text("Список покупок", size=28, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
                 ft.Row(
                     controls=[
                         name_input,

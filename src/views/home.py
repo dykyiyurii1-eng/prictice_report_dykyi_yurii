@@ -181,9 +181,10 @@ async def home(page):
                     padding=ft.Padding.symmetric(horizontal=58, vertical=42),
                     alignment=ft.Alignment.CENTER,
                     content=ft.Column(
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                        alignment=ft.MainAxisAlignment.CENTER,
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                         expand=True,
+                        spacing=28,
                         controls=[
                             ft.Container(
                                 alignment=ft.Alignment.CENTER,
@@ -221,6 +222,35 @@ async def home(page):
                                                 shape=ft.RoundedRectangleBorder(radius=8),
                                             ),
                                             on_click=go_products,
+                                        ),
+                                        ft.Row(
+                                            spacing=12,
+                                            wrap=True,
+                                            alignment=ft.MainAxisAlignment.CENTER,
+                                            controls=[
+                                                ft.Button(
+                                                    "Покупки",
+                                                    icon=ft.Icons.SHOPPING_BAG_OUTLINED,
+                                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                                    on_click=go_buy_products,
+                                                ),
+                                                ft.Button(
+                                                    "Аналітика",
+                                                    icon=ft.Icons.INSIGHTS,
+                                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                                    on_click=go_analytics,
+                                                ),
+                                            ],
+                                        ),
+                                        ft.Container(
+                                            width=720,
+                                            alignment=ft.Alignment.CENTER,
+                                            content=ft.Text(
+                                                "Швидкий доступ до таблиці товарів, покупок і аналізу витрат з одного місця.",
+                                                size=13,
+                                                color=ft.Colors.with_opacity(0.78, ft.Colors.WHITE),
+                                                text_align=ft.TextAlign.CENTER,
+                                            ),
                                         ),
                                     ],
                                 )
