@@ -7,15 +7,10 @@ from src.models.product_add import products_add_to_txt
 
 async def buy_products(page: ft.Page):
     page.scroll = "auto"
-    picker = ft.DateRangePicker()
+
     load_buy_products()
 
-    btn1 = ft.Button(
-        "Pick date range",
-        icon=ft.Icons.DATE_RANGE,
-        on_click=lambda _: page.show_dialog(picker),
-        style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
-    )
+
 
     async def handle_dialog_action_click(e: ft.Event[ft.TextButton]):
         page.pop_dialog()
@@ -41,7 +36,9 @@ async def buy_products(page: ft.Page):
 
     def handle_dismiss(e: ft.Event[ft.Dismissible]):
         e.control.parent.controls.remove(e.control)
+        empty_state.visible = len(list_view.controls) == 0
         e.control.parent.update()
+        empty_state.update()
 
 
 
@@ -57,12 +54,51 @@ async def buy_products(page: ft.Page):
                 ft.DismissDirection.END_TO_START: 0.2,
                 ft.DismissDirection.START_TO_END: 0.2,
             },
-            content=ft.ListTile(title=ft.Text(text)),
+            content=ft.Container(
+                margin=ft.Margin.only(bottom=8),
+                border_radius=8,
+                bgcolor=ft.Colors.WHITE,
+                border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
+                content=ft.ListTile(
+                    leading=ft.Icon(ft.Icons.SHOPPING_CART_OUTLINED, color=ft.Colors.CYAN_700),
+                    title=ft.Text(text, color=TEXT_DARK, weight=ft.FontWeight.W_500),
+                    trailing=ft.Icon(ft.Icons.SWIPE, color=ft.Colors.BLUE_GREY_300),
+                ),
+            ),
         )
 
     list_view = ft.ListView(
         expand=True,
         controls=[make_dismissible(f"{i}") for i in list_products],
+    )
+
+    empty_state = ft.Container(
+        visible=len(list_products) == 0,
+        expand=True,
+        alignment=ft.Alignment.CENTER,
+        padding=24,
+        content=ft.Column(
+            spacing=12,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ftl.Lottie(
+                    src="https://assets2.lottiefiles.com/packages/lf20_wd1udlcz.json",
+                    reverse=False,
+                    width=180,
+                    height=130,
+                    error_content=ft.Placeholder(ft.Text("Error loading Lottie")),
+                    on_error=lambda e: print(f"Error loading Lottie: {e.data}"),
+                ),
+                ft.Text("Список покупок порожній", size=22, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text(
+                    "Додайте продукт у полі вище, і він з'явиться тут.",
+                    size=14,
+                    color=ft.Colors.BLUE_GREY_600,
+                    text_align=ft.TextAlign.CENTER,
+                ),
+            ],
+        ),
     )
 
     name_input = ft.TextField(
@@ -76,9 +112,9 @@ async def buy_products(page: ft.Page):
             list_view.controls.append(make_dismissible(name_input.value.strip()))
             products_add_to_txt(name_input.value.strip())
             name_input.value = ""
+            empty_state.visible = False
             list_view.update()
-
-            # name_input.update()
+            empty_state.update()
 
     content = ft.Container(
         expand=True,
@@ -128,9 +164,14 @@ async def buy_products(page: ft.Page):
                     border_radius=8,
                     border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
                     padding=10,
-                    content=list_view,
+                    content=ft.Stack(
+                        expand=True,
+                        controls=[
+                            list_view,
+                            empty_state,
+                        ],
+                    ),
                 ),
-                btn1,
             ],
         ),
     )

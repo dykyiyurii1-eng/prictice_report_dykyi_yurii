@@ -6,7 +6,40 @@ from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
 async def analytics(page):
+    loading_view = ft.View(
+        route="/analytics",
+        controls=[
+            ft.Row(
+                expand=True,
+                spacing=0,
+                controls=[
+                    navigation_menu(page, "/analytics"),
+                    ft.Container(
+                        expand=True,
+                        bgcolor=APP_BG,
+                        alignment=ft.Alignment.CENTER,
+                        content=ft.Column(
+                            spacing=14,
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                            controls=[
+                                ft.ProgressRing(width=54, height=54, stroke_width=6, color=ft.Colors.CYAN_700),
+                                ft.Text("Готуємо аналітику...", size=18, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                                ft.Text("Завантажуємо товари та формуємо графік.", size=13, color=ft.Colors.BLUE_GREY_600),
+                            ],
+                        ),
+                    ),
+                ],
+            )
+        ],
+    )
+    page.views.append(loading_view)
+    page.update()
+
     products = await load_products()
+
+    if loading_view in page.views:
+        page.views.remove(loading_view)
 
     if not products:
         content = ft.Container(

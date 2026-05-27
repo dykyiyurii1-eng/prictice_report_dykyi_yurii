@@ -24,11 +24,6 @@ async def table_of_products1(page):
         hint_style=ft.TextStyle(color=ft.Colors.GREY_500, italic=True),
     )
 
-    async def go_city(e):
-        await page.push_route("/")
-
-    async def go_user_add(e):
-        await page.push_route("/add_user")
 
     def edit_row(e):
         item = e.control.data
@@ -45,11 +40,10 @@ async def table_of_products1(page):
         page.update()
 
     def delete_row(e):
-        global products
         item = e.control.data
-        table.rows = [row for row in table.rows if row.data != item]
-        products = [p for p in products if p["id"] != item["id"]]
-        write_table(products,  filename)
+        table.rows[:] = [row for row in table.rows if row.data != item]
+        products[:] = [p for p in products if p["id"] != item["id"]]
+        write_table(products, filename)
         table.visible = bool(products)
         empty_state.visible = not bool(products)
         page.update()
@@ -104,10 +98,27 @@ async def table_of_products1(page):
                 ft.DataCell(cell_text(item["start_date"], 128)),
                 ft.DataCell(cell_text(item["end_date"], 110)),
                 ft.DataCell(
-                    ft.Row([
-                        ft.IconButton(icon=ft.Icons.DELETE, data=item, on_click=delete_row),
-                        ft.IconButton(icon=ft.Icons.EDIT_NOTE, data=item, on_click=edit_row),
-                    ])
+                    ft.Row(
+                        spacing=4,
+                        controls=[
+                            ft.IconButton(
+                                icon=ft.Icons.DELETE,
+                                icon_color=ft.Colors.RED_600,
+                                bgcolor=ft.Colors.RED_50,
+                                tooltip="Видалити",
+                                data=item,
+                                on_click=delete_row,
+                            ),
+                            ft.IconButton(
+                                icon=ft.Icons.EDIT_NOTE,
+                                icon_color=ft.Colors.CYAN_700,
+                                bgcolor=ft.Colors.CYAN_50,
+                                tooltip="Редагувати",
+                                data=item,
+                                on_click=edit_row,
+                            ),
+                        ],
+                    )
                 ),
             ],
             data=item,
@@ -223,6 +234,7 @@ async def table_of_products1(page):
         page.update()
 
     def cancle(e):
+        add_product.visible = bool(products)
         input_rows.visible = False
         add_btn_agree.visible = False
         btn_for_cancle.visible = False
@@ -239,9 +251,14 @@ async def table_of_products1(page):
 
     btn_for_cancle = ft.Button(
         "Скасувати",
+        icon=ft.Icons.CLOSE,
         on_click=cancle,
         visible=False,
-        style=ft.ButtonStyle(color=ft.Colors.BLUE_GREY_700),
+        style=ft.ButtonStyle(
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            color=ft.Colors.BLUE_GREY_800,
+            shape=ft.RoundedRectangleBorder(radius=8),
+        ),
     )
     add_btn_agree = ft.Button(
         "Підтвердити",
@@ -305,6 +322,7 @@ async def table_of_products1(page):
                     icon=ft.Icons.ADD,
                     on_click=fields_see,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
+                    visible=bool(products),
                 ),
             ],
         ),
@@ -323,15 +341,21 @@ async def table_of_products1(page):
             bgcolor=PANEL_BG,
             border_radius=8,
             content=ft.Column([
+
                 input_rows,
                 empty_state,
                 table_area,
-                add_btn_agree,
+                ft.Row(
+                    spacing=10,
+                    controls=[
+                        add_btn_agree,
+                        btn_for_cancle,
+                    ],
+                ),
                 add_product,
-                btn_for_cancle,
 
 
-    ])
+    ], scroll = ft.ScrollMode.AUTO,)
         ),
     )
 
@@ -341,7 +365,7 @@ async def table_of_products1(page):
         padding=20,
         content=ft.Column([
             ft.AppBar(
-                title=ft.Text("Products", color=TEXT_DARK, weight=ft.FontWeight.BOLD),
+                title=ft.Text("Продукти", color=TEXT_DARK, weight=ft.FontWeight.BOLD),
                 bgcolor=APP_BG,
                 elevation=0,
                 actions=[

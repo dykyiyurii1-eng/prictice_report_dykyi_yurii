@@ -45,10 +45,10 @@ async def home(page):
         return dates
 
     def build_notifications():
-        today = datetime.datetime.now()
+        today = datetime.datetime.now().date()
         dates = product_end_dates()
-        expired_count = sum(1 for end_date in dates if end_date < today)
-        soon_count = sum(1 for end_date in dates if 0 <= (end_date - today).days <= 5)
+        expired_count = sum(1 for end_date in dates if end_date.date() < today)
+        soon_count = sum(1 for end_date in dates if 0 <= (end_date.date() - today).days <= 3)
 
         return ft.Row(
             spacing=16,
