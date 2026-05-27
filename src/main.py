@@ -8,7 +8,7 @@ async def main(page: ft.Page):
     page.scroll = ft.ScrollMode.AUTO
     page.image='assets/main_photo.jpg'
     page.favicon='assets/icon.ico'
-    # page.bgcolor = ft.Colors.TRANSPARENT
+
 
     async def route_change(e=None):
         page.views.clear()
@@ -19,7 +19,7 @@ async def main(page: ft.Page):
         if page.route == "/buy_products":
             page.views.append(await buy_products(page))
         if page.route == "/analytics":
-            page.views.append(await analytics(page))
+            await analytics(page)
         page.update()
 
     async def view_pop(e):

@@ -1,6 +1,5 @@
 import flet as ft
 
-
 APP_BG = "#EEF4F8"
 PANEL_BG = "#FFFFFF"
 MENU_BG = "#102331"
@@ -13,7 +12,6 @@ def navigation_menu(page, active_route="/"):
     def nav_click(route):
         async def handler(e):
             await page.push_route(route)
-
         return handler
 
     nav_items = [
@@ -37,9 +35,15 @@ def navigation_menu(page, active_route="/"):
                     height=66,
                     border_radius=8,
                     bgcolor=ft.Colors.WHITE,
-                    border=ft.Border.all(1, ft.Colors.with_opacity(0.35, ft.Colors.CYAN_ACCENT)),
+                    border=ft.Border.all(2, ft.Colors.CYAN_ACCENT),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=12,
+                        color=ft.Colors.with_opacity(0.4, ft.Colors.CYAN_ACCENT),
+                    ),
                     alignment=ft.Alignment.CENTER,
                     content=ft.Image(src="icon.ico", height=48, width=48),
+
                 ),
                 ft.Column(
                     expand=True,
@@ -51,6 +55,8 @@ def navigation_menu(page, active_route="/"):
                             width=82,
                             height=72,
                             border_radius=8,
+                            ink=True,
+                            on_click=nav_click(route),
                             bgcolor=ft.Colors.with_opacity(0.16, MENU_ACTIVE) if route == active_route else ft.Colors.TRANSPARENT,
                             border=ft.Border.all(1, ft.Colors.with_opacity(0.35, MENU_ACTIVE)) if route == active_route else None,
                             content=ft.Column(
@@ -58,11 +64,10 @@ def navigation_menu(page, active_route="/"):
                                 alignment=ft.MainAxisAlignment.CENTER,
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 controls=[
-                                    ft.IconButton(
-                                        icon=icon,
-                                        tooltip=label,
-                                        icon_color=ft.Colors.CYAN_ACCENT if route == active_route else MENU_TEXT,
-                                        on_click=nav_click(route),
+                                    ft.Icon(
+                                        icon,
+                                        color=ft.Colors.CYAN_ACCENT if route == active_route else MENU_TEXT,
+                                        size=24,
                                     ),
                                     ft.Text(
                                         label,

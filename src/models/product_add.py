@@ -1,25 +1,6 @@
-import csv
 from .save_data import *
 import os
-def load_csv_products():
-    """Записування в змінну те, що в таблиці"""
-    products.clear()
-    try:
-        with open(filename,"r",encoding="utf-8") as file:
-            save_product=csv.DictReader(file)
-            for i in save_product:
-                products.append({
-                    "id": i["id"],
-                    "name": i["name"],
-                    "category": i["category"],
-                    "quantity": int(i["quantity"]),
-                    "place": i["place"],
-                    "price": float(i["price"]),
-                    "start_date": i["start_date"],
-                    "end_date": i["end_date"]
-                })
-    except FileNotFoundError:
-        pass
+
 
 def products_add_to_txt(text):
     try:
@@ -29,20 +10,17 @@ def products_add_to_txt(text):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
 
 
-
-def write_csv():
-        try:
-            with open(filename, "r", encoding="utf-8") as file:
-                reader = csv.DictReader(file)
-                return reader
-
-        except FileNotFoundError:
-             return []
-
+def products_remove_from_txt(name: str):
+    lines = []
+    with open(filename_txt, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    with open(filename_txt, "w", encoding="utf-8") as f:
+        for line in lines:
+            if line.strip() != name.strip():
+                f.write(line)
 
 
 
-if __name__ == '__main__':
-    load_csv_products()
+
 
 

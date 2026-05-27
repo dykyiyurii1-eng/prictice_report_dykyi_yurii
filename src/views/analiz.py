@@ -6,75 +6,60 @@ from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
 async def analytics(page):
-    loading_view = ft.View(
+    main_area = ft.Container(
+        expand=True,
+        bgcolor=APP_BG,
+        alignment=ft.Alignment.CENTER,
+        content=ft.Column(
+            spacing=14,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ft.ProgressRing(width=54, height=54, stroke_width=6, color=ft.Colors.CYAN_700),
+                ft.Text("Готуємо аналітику...", size=18, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text("Завантажуємо товари та формуємо графік.", size=13, color=ft.Colors.BLUE_GREY_600),
+            ],
+        ),
+    )
+
+    view = ft.View(
         route="/analytics",
+        padding=0,
         controls=[
             ft.Row(
                 expand=True,
                 spacing=0,
                 controls=[
                     navigation_menu(page, "/analytics"),
-                    ft.Container(
-                        expand=True,
-                        bgcolor=APP_BG,
-                        alignment=ft.Alignment.CENTER,
-                        content=ft.Column(
-                            spacing=14,
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            controls=[
-                                ft.ProgressRing(width=54, height=54, stroke_width=6, color=ft.Colors.CYAN_700),
-                                ft.Text("Готуємо аналітику...", size=18, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
-                                ft.Text("Завантажуємо товари та формуємо графік.", size=13, color=ft.Colors.BLUE_GREY_600),
-                            ],
-                        ),
-                    ),
+                    main_area,
                 ],
             )
         ],
     )
-    page.views.append(loading_view)
-    page.update()
+    page.views.append(view)
+
 
     products = await load_products()
 
-    if loading_view in page.views:
-        page.views.remove(loading_view)
-
     if not products:
-        content = ft.Container(
+        main_area.alignment = ft.Alignment.CENTER
+        main_area.content = ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             expand=True,
-            bgcolor=APP_BG,
-            padding=24,
-            content=ft.Column(
-                [
-                    ft.Icon(ft.Icons.BAR_CHART_OUTLINED, size=56, color=ft.Colors.CYAN_700),
-                    ft.Text("Поки немає даних для аналізу", size=22, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
-                    ft.Text(
-                        "Додайте товари в таблиці, і тут з'явиться короткий аналіз витрат.",
-                        size=14,
-                        color=ft.Colors.BLUE_GREY_600,
-                        text_align=ft.TextAlign.CENTER,
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                expand=True,
-            ),
-        )
-        return ft.View(
-            route="/analytics",
             controls=[
-                ft.Row(
-                    expand=True,
-                    spacing=0,
-                    controls=[
-                        navigation_menu(page, "/analytics"),
-                        content,
-                    ],
-                )
+                ft.Icon(ft.Icons.BAR_CHART_OUTLINED, size=56, color=ft.Colors.CYAN_700),
+                ft.Text("Поки немає даних для аналізу", size=22, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+                ft.Text(
+                    "Додайте товари в таблиці, і тут з'явиться короткий аналіз витрат.",
+                    size=14,
+                    color=ft.Colors.BLUE_GREY_600,
+                    text_align=ft.TextAlign.CENTER,
+                ),
             ],
         )
+    
+        return
 
     names = [p["name"] for p in products]
     costs = [p["quantity"] * p["price"] for p in products]
@@ -105,40 +90,22 @@ async def analytics(page):
         ],
     )
 
-    content = ft.Container(
+    main_area.alignment = None
+    main_area.content = ft.Column(
         expand=True,
-        bgcolor=APP_BG,
-        padding=20,
-        content=ft.Column(
-            expand=True,
-            spacing=14,
-            controls=[
-                ft.Text("Analytics", size=24, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
-                ft.Container(
-                    height=380,
-                    padding=14,
-                    bgcolor=PANEL_BG,
-                    border_radius=8,
-                    border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
-                    content=chart,
-                ),
-                stats,
-            ],
-        ),
-    )
-
-    return ft.View(
-        route="/analytics",
         scroll=ft.ScrollMode.AUTO,
-        padding=0,
+        spacing=14,
         controls=[
-            ft.Row(
-                expand=True,
-                spacing=0,
-                controls=[
-                    navigation_menu(page, "/analytics"),
-                    content,
-                ],
-            )
+            ft.Text("Аналіз продуктів", size=24, weight=ft.FontWeight.BOLD, color=TEXT_DARK),
+            ft.Container(
+                height=380,
+                padding=14,
+                bgcolor=PANEL_BG,
+                border_radius=8,
+                border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
+                content=chart,
+            ),
+            stats,
         ],
     )
+    main_area.padding = 20

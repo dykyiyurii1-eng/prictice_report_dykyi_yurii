@@ -46,6 +46,7 @@ async def table_of_products1(page):
         write_table(products, filename)
         table.visible = bool(products)
         empty_state.visible = not bool(products)
+        add_product.visible = bool(products)
         page.update()
 
     columns = [
@@ -137,6 +138,7 @@ async def table_of_products1(page):
         first_date=datetime.datetime(year=today.year, month=today.month, day=today.day),
         last_date=datetime.datetime(year=today.year + 1, month=12, day=31),
         current_date=today,
+        locale=ft.Locale("uk", "UA"),
         on_change=handle_change,
     )
 
@@ -231,6 +233,7 @@ async def table_of_products1(page):
         input_rows.visible = False
         add_btn_agree.visible = False
         btn_for_cancle.visible = False
+        add_product.visible=bool(products)
         page.update()
 
     def cancle(e):
@@ -273,9 +276,13 @@ async def table_of_products1(page):
                 icon=ft.Icons.ADD,
                 on_click=fields_see,
                 style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
+
+
             )
         ],
         alignment=ft.MainAxisAlignment.END,
+        visible=bool(products)
+
     )
 
     def search_products(e):
@@ -318,11 +325,10 @@ async def table_of_products1(page):
                 ),
                 ft.Icon(ft.Icons.KEYBOARD_DOUBLE_ARROW_DOWN, size=32, color=ft.Colors.CYAN_700),
                 ft.Button(
-                    "Додати продукт",
+                    "Додати продукт", #
                     icon=ft.Icons.ADD,
                     on_click=fields_see,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
-                    visible=bool(products),
                 ),
             ],
         ),

@@ -209,8 +209,8 @@ async def home(page):
                                         ft.Button(
                                             content=ft.Row(
                                                 controls=[
-                                                    ft.Icon(ft.Icons.ROCKET_LAUNCH, color=ft.Colors.BLACK),
-                                                    ft.Text("Почати роботу", size=16, weight=ft.FontWeight.BOLD,
+                                                    ft.Icon(ft.Icons.PLAY_CIRCLE, color=ft.Colors.BLACK),
+                                                    ft.Text("Починаймо", size=16, weight=ft.FontWeight.BOLD,
                                                             color=ft.Colors.BLACK),
                                                 ],
                                                 tight=True,
