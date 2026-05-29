@@ -7,11 +7,9 @@ from src.models.logic_id_valid_name import *
 from src.views.menu import APP_BG, PANEL_BG, TEXT_DARK, navigation_menu
 
 
-
 async def table_of_products1(page):
     page.favicon = "icon.ico"
-    products= await load_products()
-
+    products = await load_products()
 
     style_field = dict(
         border_color=ft.Colors.BLUE_GREY_100,
@@ -23,7 +21,6 @@ async def table_of_products1(page):
         label_style=ft.TextStyle(color=ft.Colors.BLUE_GREY_700),
         hint_style=ft.TextStyle(color=ft.Colors.GREY_500, italic=True),
     )
-
 
     def edit_row(e):
         item = e.control.data
@@ -125,8 +122,6 @@ async def table_of_products1(page):
             data=item,
         )
 
-
-
     def handle_change(e):
         if e.control.value:
             local_date = e.control.value.astimezone()
@@ -142,12 +137,108 @@ async def table_of_products1(page):
         on_change=handle_change,
     )
 
-    id_input = ft.TextField(value=new_id(products), label="ID", read_only=True, **style_field)
-    name_input = ft.TextField(label="Назва", **style_field)
-    category_input = ft.TextField(label="Категорія", **style_field)
-    quantity_input = ft.TextField(label="Кількість", **style_field)
-    place_input = ft.TextField(label="Місце", **style_field)
-    price_input = ft.TextField(label="Ціна", **style_field)
+    id_input = ft.TextField(
+        value=new_id(products),
+        label="ID",
+        read_only=True,
+        **style_field,
+    )
+
+    name_input = ft.TextField(
+        label="Назва",
+        prefix_icon=ft.Icons.LABEL_OUTLINE,
+        **style_field,
+    )
+
+    category_input = ft.Dropdown(
+        label="Категорія",
+        border_color=ft.Colors.BLUE_GREY_100,
+        border_radius=8,
+        bgcolor=ft.Colors.WHITE,
+        focused_border_color=ft.Colors.CYAN_600,
+        text_style=ft.TextStyle(color=TEXT_DARK, size=14, weight=ft.FontWeight.W_500),
+        label_style=ft.TextStyle(color=ft.Colors.BLUE_GREY_700),
+        options=[
+            ft.dropdown.Option(key="Молочне", content=ft.Row(controls=[ft.Icon(ft.Icons.WATER_DROP, color=ft.Colors.BLUE_400, size=18), ft.Text("Молочне", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="М'ясне", content=ft.Row(controls=[ft.Icon(ft.Icons.SET_MEAL, color=ft.Colors.RED_400, size=18), ft.Text("М'ясне", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Овочі", content=ft.Row(controls=[ft.Icon(ft.Icons.ECO, color=ft.Colors.GREEN_500, size=18), ft.Text("Овочі", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Фрукти", content=ft.Row(controls=[ft.Icon(ft.Icons.SPA, color=ft.Colors.ORANGE_400, size=18), ft.Text("Фрукти", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Напої", content=ft.Row(controls=[ft.Icon(ft.Icons.LOCAL_DRINK, color=ft.Colors.CYAN_500, size=18), ft.Text("Напої", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Заморожене", content=ft.Row(controls=[ft.Icon(ft.Icons.AC_UNIT, color=ft.Colors.LIGHT_BLUE_300, size=18), ft.Text("Заморожене", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Бакалія", content=ft.Row(controls=[ft.Icon(ft.Icons.GRAIN, color=ft.Colors.BROWN_400, size=18), ft.Text("Бакалія", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Інше", content=ft.Row(controls=[ft.Icon(ft.Icons.MORE_HORIZ, color=ft.Colors.BLUE_GREY_400, size=18), ft.Text("Інше", color=TEXT_DARK)])),
+        ],
+    )
+
+
+    quantity_input = ft.TextField(
+        label="Кількість",
+        value="1",
+        text_align=ft.TextAlign.CENTER,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        **style_field,
+    )
+
+    def increment(e):
+        try:
+            quantity_input.value = str(int(quantity_input.value or 0) + 1)
+        except ValueError:
+            quantity_input.value = "1"
+        quantity_input.update()
+
+    def decrement(e):
+        try:
+            val = int(quantity_input.value or 0)
+            if val > 1:
+                quantity_input.value = str(val - 1)
+        except ValueError:
+            quantity_input.value = "1"
+        quantity_input.update()
+
+    quantity_row = ft.Row(
+        controls=[
+            ft.IconButton(
+                icon=ft.Icons.REMOVE_CIRCLE_OUTLINE,
+                icon_color=ft.Colors.CYAN_700,
+                tooltip="Зменшити",
+                on_click=decrement,
+            ),
+            quantity_input,
+            ft.IconButton(
+                icon=ft.Icons.ADD_CIRCLE_OUTLINE,
+                icon_color=ft.Colors.CYAN_700,
+                tooltip="Збільшити",
+                on_click=increment,
+            ),
+        ],
+        spacing=4,
+        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+
+    place_input = ft.Dropdown(
+        label="Місце зберігання",
+        text_style=ft.TextStyle(color=TEXT_DARK, size=14, weight=ft.FontWeight.W_500),
+        label_style=ft.TextStyle(color=ft.Colors.BLUE_GREY_700),
+        border_color=ft.Colors.BLUE_GREY_100,
+        border_radius=8,
+        bgcolor=ft.Colors.WHITE,
+        focused_border_color=ft.Colors.CYAN_600,
+        options=[
+            ft.dropdown.Option(key="Холодильник", content=ft.Row(controls=[ft.Icon(ft.Icons.KITCHEN, color=ft.Colors.BLUE_400, size=18), ft.Text("Холодильник", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Морозилка", content=ft.Row(controls=[ft.Icon(ft.Icons.AC_UNIT, color=ft.Colors.LIGHT_BLUE_300, size=18), ft.Text("Морозилка", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Комора", content=ft.Row(controls=[ft.Icon(ft.Icons.STORAGE, color=ft.Colors.BROWN_400, size=18), ft.Text("Комора", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Полиця", content=ft.Row(controls=[ft.Icon(ft.Icons.SHELVES, color=ft.Colors.ORANGE_400, size=18), ft.Text("Полиця", color=TEXT_DARK)])),
+            ft.dropdown.Option(key="Інше", content=ft.Row(controls=[ft.Icon(ft.Icons.MORE_HORIZ, color=ft.Colors.BLUE_GREY_400, size=18), ft.Text("Інше", color=TEXT_DARK)])),
+        ],
+    )
+
+    price_input = ft.TextField(
+        label="Ціна",
+        prefix_icon=ft.Icons.ATTACH_MONEY,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        **style_field,
+    )
+
     end_date_input = ft.TextField(
         label="Дата завершення",
         read_only=True,
@@ -155,6 +246,7 @@ async def table_of_products1(page):
         on_click=lambda e: page.show_dialog(picker),
         **style_field,
     )
+
     start_date_input = ft.TextField(
         label="Дата початку",
         helper=f'Дата буде записана так {datetime.datetime.now().strftime("%d.%m.%Y %H:%M")}',
@@ -164,18 +256,18 @@ async def table_of_products1(page):
     )
 
     input_rows = ft.Column([
-        ft.Row([id_input, name_input, category_input, quantity_input]),
+        ft.Row([id_input, name_input, category_input, quantity_row]),
         ft.Row([place_input, price_input, start_date_input, end_date_input]),
     ], visible=False)
 
     def agree(e):
         data = {
-            "name": name_input.value,
-            "category": category_input.value,
-            "quantity": quantity_input.value,
-            "place": place_input.value,
-            "price": price_input.value,
-            "end_date": end_date_input.value,
+            "name": name_input.value or "",
+            "category": category_input.value or "",
+            "quantity": quantity_input.value or "",
+            "place": place_input.value or "",
+            "price": price_input.value or "",
+            "end_date": end_date_input.value or "",
         }
         ok, msg = validate_product(data)
         if not ok:
@@ -229,11 +321,11 @@ async def table_of_products1(page):
             table.visible = True
             empty_state.visible = False
 
-        write_table(products,  filename)
+        write_table(products, filename)
         input_rows.visible = False
         add_btn_agree.visible = False
         btn_for_cancle.visible = False
-        add_product.visible=bool(products)
+        add_product.visible = bool(products)
         page.update()
 
     def cancle(e):
@@ -245,7 +337,9 @@ async def table_of_products1(page):
         page.update()
 
     def fields_see(e):
-        id_input.value = new_id(products)
+        if not input_rows.visible:
+            id_input.value = new_id(products)
+            quantity_input.value = "1"
         input_rows.visible = True
         add_btn_agree.visible = True
         btn_for_cancle.visible = True
@@ -276,13 +370,10 @@ async def table_of_products1(page):
                 icon=ft.Icons.ADD,
                 on_click=fields_see,
                 style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
-
-
             )
         ],
         alignment=ft.MainAxisAlignment.END,
-        visible=bool(products)
-
+        visible=bool(products),
     )
 
     def search_products(e):
@@ -303,7 +394,7 @@ async def table_of_products1(page):
         on_change=search_products,
     )
 
-    table.rows=[create_row(item) for item in products]
+    table.rows = [create_row(item) for item in products]
 
     empty_state = ft.Container(
         visible=not bool(products),
@@ -325,7 +416,7 @@ async def table_of_products1(page):
                 ),
                 ft.Icon(ft.Icons.KEYBOARD_DOUBLE_ARROW_DOWN, size=32, color=ft.Colors.CYAN_700),
                 ft.Button(
-                    "Додати продукт", #
+                    "Додати продукт",
                     icon=ft.Icons.ADD,
                     on_click=fields_see,
                     style=ft.ButtonStyle(bgcolor=ft.Colors.CYAN_600, color=ft.Colors.WHITE),
@@ -347,7 +438,6 @@ async def table_of_products1(page):
             bgcolor=PANEL_BG,
             border_radius=8,
             content=ft.Column([
-
                 input_rows,
                 empty_state,
                 table_area,
@@ -359,9 +449,7 @@ async def table_of_products1(page):
                     ],
                 ),
                 add_product,
-
-
-    ], scroll = ft.ScrollMode.AUTO,)
+            ], scroll=ft.ScrollMode.AUTO,)
         ),
     )
 
@@ -374,9 +462,7 @@ async def table_of_products1(page):
                 title=ft.Text("Продукти", color=TEXT_DARK, weight=ft.FontWeight.BOLD),
                 bgcolor=APP_BG,
                 elevation=0,
-                actions=[
-                    anchor,
-                ]
+                actions=[anchor],
             ),
             page_add,
         ], expand=True),
@@ -393,5 +479,5 @@ async def table_of_products1(page):
                     content,
                 ],
             )
-        ]
+        ],
     )

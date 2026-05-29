@@ -38,9 +38,12 @@ async def buy_products(page: ft.Page):
 
             async def save(ev):
                 old_name = dismissible.content.content.title.value
-                dismissible.content.content.title.value = edit_input.value
+                new_name = edit_input.value.strip()
+                dismissible.content.content.title.value = new_name
                 dismissible.content.content.update()
-                save_to_history("Відредаговано", f"{old_name} → {edit_input.value}")
+                products_remove_from_txt(old_name)
+                products_add_to_txt(new_name)
+                save_to_history("Відредаговано", f"{old_name} → {new_name}")
                 page.pop_dialog()
                 await dismissible.confirm_dismiss(False)
 

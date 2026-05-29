@@ -36,5 +36,5 @@ async def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    ft.run(main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")
+    ft.run(main, view=ft.AppView.WEB_BROWSER, port=5000, assets_dir="assets")
     # ft.run(main)
