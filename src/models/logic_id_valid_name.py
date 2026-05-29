@@ -1,5 +1,6 @@
 import random
 import string
+import re
 
 def new_id(products):
     existing = [p["id"] for p in products]
@@ -15,16 +16,18 @@ def validate_product(data):
     for field in required:
         if not data.get(field, "").strip():
             return False, "Заповніть усі поля та оберіть дату завершення"
-    try:
-        q = int(data["quantity"].strip())
-        if q <= 0:
-            raise ValueError
-    except ValueError:
-        return False, "Кількість має бути цілим числом > 0"
-    try:
-        p = float(data["price"].strip())
-        if p <= 0:
-            raise ValueError
-    except ValueError:
-        return False, "Ціна має бути числом > 0"
+
+    if not re.match(r"^\d+$", data["quantity"].strip()):
+        return False, "Кількість має бути цілим числом"
+    if int(data["quantity"].strip()) <= 0:
+        return False, "Кількість має бути більше 0"
+
+    if not re.match(r"^\d+(\.\d+)?$", data["price"].strip()):
+        return False, "Ціна має бути числом"
+    if float(data["price"].strip()) <= 0:
+        return False, "Ціна має бути більше 0"
+
+    if not re.match(r"^\d{2}\.\d{2}\.\d{4}$", data["end_date"].strip()):
+        return False, "Дата має бути у форматі дд.мм.рррр"
+
     return True, ""

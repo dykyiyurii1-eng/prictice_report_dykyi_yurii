@@ -224,6 +224,7 @@ async def buy_products(page: ft.Page):
         label="Введіть назву продукту",
         expand=True,
         border_color=ft.Colors.BLUE_GREY_300,
+        color='black'
     )
 
     def add_new_item(e):

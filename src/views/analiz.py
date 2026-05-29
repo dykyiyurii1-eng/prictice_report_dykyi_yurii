@@ -37,6 +37,7 @@ async def analytics(page):
         ],
     )
     page.views.append(view)
+    page.update()
 
 
     products = await load_products()
@@ -109,3 +110,4 @@ async def analytics(page):
         ],
     )
     main_area.padding = 20
+    page.update()

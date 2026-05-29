@@ -1,13 +1,56 @@
 import datetime
-
 import flet as ft
-
 from src.models.load_product import load_products
 from src.views.menu import MENU_ACTIVE, navigation_menu
 
 
 async def home(page):
     products = await load_products()
+    prefs = ft.SharedPreferences()
+
+    current_theme = await prefs.get("theme") or "system"
+
+    def get_theme_icon(t: str):
+        if t == "light":
+            return ft.Icons.LIGHT_MODE
+        elif t == "dark":
+            return ft.Icons.DARK_MODE
+        else:
+            return ft.Icons.SYSTEM_UPDATE
+
+    theme_icon_btn = ft.IconButton(
+        icon=get_theme_icon(current_theme),
+        icon_color=ft.Colors.WHITE,
+        icon_size=28,
+        tooltip="Змінити тему",
+    )
+
+    def apply_theme(t: str):
+        if t == "dark":
+            page.theme_mode = ft.ThemeMode.DARK
+        elif t == "light":
+            page.theme_mode = ft.ThemeMode.LIGHT
+        else:
+            page.theme_mode = ft.ThemeMode.SYSTEM
+        page.update()
+
+    apply_theme(current_theme)
+
+    async def change_theme(e):
+        nonlocal current_theme
+        if current_theme == "system":
+            current_theme = "light"
+        elif current_theme == "light":
+            current_theme = "dark"
+        else:
+            current_theme = "system"
+
+        await prefs.set("theme", current_theme)
+        apply_theme(current_theme)
+        theme_icon_btn.icon = get_theme_icon(current_theme)
+        theme_icon_btn.update()
+
+    theme_icon_btn.on_click = change_theme
 
     async def go_products(e):
         await page.push_route("/table_of_products")
@@ -21,7 +64,6 @@ async def home(page):
     def nav_click(route):
         async def handler(e):
             await page.push_route(route)
-
         return handler
 
     async def handle_drawer_change(e):
@@ -172,10 +214,10 @@ async def home(page):
         expand=True,
         clip_behavior=ft.ClipBehavior.HARD_EDGE,
         content=ft.Stack(
-        width=float("inf"),
+            width=float("inf"),
             expand=True,
             controls=[
-                ft.Image(src="main_photo.jpg", fit=ft.BoxFit.COVER, expand=True,width=float("inf")),
+                ft.Image(src="main_photo.jpg", fit=ft.BoxFit.COVER, expand=True, width=float("inf")),
                 ft.Container(bgcolor="#B0102331", expand=True),
                 ft.Container(
                     padding=ft.Padding.symmetric(horizontal=58, vertical=42),
@@ -186,6 +228,10 @@ async def home(page):
                         expand=True,
                         spacing=28,
                         controls=[
+                            ft.Container(
+                                alignment=ft.Alignment.TOP_RIGHT,
+                                content=theme_icon_btn,
+                            ),
                             ft.Container(
                                 alignment=ft.Alignment.CENTER,
                                 content=ft.Column(
@@ -200,9 +246,9 @@ async def home(page):
                                             text_align=ft.TextAlign.CENTER,
                                         ),
                                         ft.Text(
-                                           "Відстежуй кількість, терміни придатності та споживання товарів",
+                                            "Відстежуй кількість, терміни придатності та споживання товарів",
                                             size=15,
-                                            color= ft.Colors.WHITE,
+                                            color=ft.Colors.WHITE,
                                             text_align=ft.TextAlign.CENTER,
                                         ),
                                         build_notifications(),

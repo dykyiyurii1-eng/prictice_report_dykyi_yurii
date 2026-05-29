@@ -11,16 +11,18 @@ async def main(page: ft.Page):
 
 
     async def route_change(e=None):
+        route = page.route or "/"
         page.views.clear()
         page.views.append(await home(page))
 
         if page.route == "/table_of_products":
             page.views.append(await table_of_products1(page))
-        if page.route == "/buy_products":
+        elif route == "/buy_products":
             page.views.append(await buy_products(page))
-        if page.route == "/analytics":
+        elif route == "/analytics":
             await analytics(page)
         page.update()
+
 
     async def view_pop(e):
         if len(page.views) > 1:
